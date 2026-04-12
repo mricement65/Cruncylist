@@ -1,0 +1,92 @@
+/* ============================================
+   layout.css — Homepage Grid & Page Layouts
+   ============================================ */
+
+/* 
+   The homepage has two "zones":
+   1. Main content (seasonal, top anime, reviews)  
+   2. Sidebar widgets (top airing, top upcoming, most popular)
+   On wider screens we use a 2-column layout. 
+*/
+
+/* ---------- Homepage two-column grid ---------- */
+@media (min-width: 900px) {
+  /* We target the index page via its unique section IDs */
+  main:has(#seasonal) {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* Main content sections span left column */
+  #seasonal,
+  #top-anime,
+  #reviews {
+    grid-column: 1;
+  }
+
+  /* Sidebar sections stack in right column */
+  main > section:not(#seasonal):not(#top-anime):not(#reviews) {
+    grid-column: 2;
+  }
+}
+
+/* ---------- Sidebar card styling ---------- */
+main > section:not(#seasonal):not(#top-anime):not(#reviews) {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+
+main > section:not(#seasonal):not(#top-anime):not(#reviews) h2 {
+  font-size: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+}
+
+main > section:not(#seasonal):not(#top-anime):not(#reviews) .anime-item {
+  padding: 8px 10px;
+  gap: 10px;
+}
+
+main > section:not(#seasonal):not(#top-anime):not(#reviews) .anime-item img {
+  width: 48px;
+  height: 68px;
+}
+
+main > section:not(#seasonal):not(#top-anime):not(#reviews) .anime-item h4 {
+  font-size: 12.5px;
+}
+
+main > section:not(#seasonal):not(#top-anime):not(#reviews) .anime-item p {
+  font-size: 11px;
+}
+
+main > section:not(#seasonal):not(#top-anime):not(#reviews) .anime-item strong {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+/* ---------- Anime card grid variant ---------- */
+/* For seasonal grid on the dedicated page */
+#seasonal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+/* ---------- Section spacing refinements ---------- */
+#seasonal h2,
+#top-anime h2,
+#reviews h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Decorative section icon bullets */
+#seasonal h2::before { content: '🌸'; }
+#top-anime h2::before { content: '🏆'; }
+#reviews h2::before { content: '✍️'; }
