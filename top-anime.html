@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Anime — CrunchyList</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <main>
+    <section id="top-anime">
+      <h2>Top Anime</h2>
+      <div>
+        <label>Filter: </label>
+        <select id="ranking-filter" onchange="loadFilteredRanking(this.value)">
+          <option value="all">All Anime</option>
+          <option value="airing">Top Airing</option>
+          <option value="upcoming">Top Upcoming</option>
+          <option value="tv">TV Series</option>
+          <option value="movie">Movies</option>
+          <option value="bypopularity">Most Popular</option>
+          <option value="favorite">Most Favorited</option>
+        </select>
+      </div>
+      <br>
+      <ul id="top-anime-list" class="anime-list">
+        <li>Loading...</li>
+      </ul>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <dialog id="modal"></dialog>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/render.js"></script>
+  <script src="components.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // In minimal version, just re-use the function from ui.js but without CSS tabs
+    async function loadFilteredRanking(filter) {
+      const container = document.getElementById('top-anime-list');
+      if (!container) return;
+      
+      if (filter === 'all') {
+         renderTopAnime(); // Uses state.topAnime
+         return;
+      }
+      container.innerHTML = '<li>Loading...</li>';
+      const data = await apiFetch(`${API_BASE}/top/anime?filter=${filter}&limit=15&sfw=true`);
+      if (!data) {
+        container.innerHTML = '<li>Failed to load</li>';
+        return;
+      }
+      
+      // Temporary override to state
+      const tempState = { topAnime: data.data || [] };
+      
+      container.innerHTML = tempState.topAnime.slice(0, 15).map((anime, i) => `
+        <li class="anime-item">
+          <strong>#${i + 1}</strong>
+          <img src="${anime.images?.jpg?.image_url || ''}" alt="${escHtml(anime.title)}" loading="lazy">
+          <div>
+            <h3><a href="#" onclick="openAnimeModal(${anime.mal_id}); return false;">${escHtml(anime.title)}</a></h3>
+            <p>${anime.type || 'N/A'} - ${anime.episodes ? anime.episodes + ' eps' : 'Ongoing'} - ${formatMembers(anime.members)} members</p>
+            <p><strong>Score:</strong> ${anime.score ? anime.score.toFixed(2) : 'N/A'}</p>
+          </div>
+        </li>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

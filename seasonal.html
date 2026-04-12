@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seasonal Anime — CrunchyList</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <main>
+    <section>
+      <h2>Seasonal Anime</h2>
+      <div>
+        <label>Season: </label>
+        <select onchange="const [y,s] = this.value.split('-'); loadSeasonalGrid(y, s)">
+          <option value="2025-winter">Winter 2025</option>
+          <option value="2026-spring" selected>Spring 2026</option>
+          <option value="2026-summer">Summer 2026</option>
+          <option value="2026-fall">Fall 2026</option>
+        </select>
+      </div>
+      <br>
+      <ul id="seasonal-grid" class="anime-list">
+         <li>Loading...</li>
+      </ul>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <dialog id="modal"></dialog>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/render.js"></script>
+  <script src="components.js"></script>
+  <script src="app.js"></script>
+  <script>
+    async function loadSeasonalGrid(year, season) {
+      const container = document.getElementById('seasonal-grid');
+      if (!container) return;
+      container.innerHTML = '<li>Loading...</li>';
+
+      const data = await apiFetch(`${API_BASE}/seasons/${year}/${season}?limit=24&sfw=true`);
+      if (!data || !data.data) {
+        container.innerHTML = '<li>Failed to load</li>';
+        return;
+      }
+
+      container.innerHTML = data.data.map(anime => `
+        <li class="anime-item">
+          <img src="${anime.images?.jpg?.image_url || ''}" alt="${escHtml(anime.title)}" loading="lazy">
+          <div>
+             <h3><a href="#" onclick="openAnimeModal(${anime.mal_id}); return false;">${escHtml(anime.title)}</a></h3>
+             <p>Score: ${anime.score || 'N/A'}</p>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => loadSeasonalGrid(2026, 'spring'), 100);
+    });
+  </script>
+</body>
+</html>

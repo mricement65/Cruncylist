@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Reviews — CrunchyList</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+  <div id="site-header"></div>
+
+  <main>
+    <section id="reviews">
+      <h2>Recent Anime Reviews</h2>
+      
+      <div id="reviews-pagination">
+        <button id="btn-prev" onclick="loadReviewsPage(currentReviewPage - 1)" disabled>Prev</button>
+        <span id="page-indicator">Page 1</span>
+        <button id="btn-next" onclick="loadReviewsPage(currentReviewPage + 1)">Next</button>
+      </div>
+      <br>
+
+      <ul id="reviews-list" class="anime-list">
+        <li>Loading...</li>
+      </ul>
+      
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <dialog id="modal"></dialog>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/render.js"></script>
+  <script src="components.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let currentReviewPage = 1;
+
+    async function loadReviewsPage(page) {
+      if (page < 1) return;
+      currentReviewPage = page;
+      document.getElementById('page-indicator').textContent = 'Page ' + page;
+
+      const container = document.getElementById('reviews-list');
+      container.innerHTML = '<li>Loading...</li>';
+
+      const data = await apiFetch(`${API_BASE}/reviews/anime?page=${page}`);
+      if (!data || !data.data) {
+        container.innerHTML = '<li>Failed to load reviews</li>';
+        return;
+      }
+
+      const reviews = data.data;
+      container.innerHTML = reviews.map(review => {
+        const anime = review.entry || {};
+        return `
+          <li class="anime-item">
+            <img src="${anime.images?.jpg?.image_url || ''}" alt="${escHtml(anime.title || '')}" loading="lazy">
+            <div>
+              <h3><a href="#" onclick="openAnimeModal(${anime.mal_id}); return false;">${escHtml(anime.title || 'Unknown')}</a></h3>
+              <p>Score: ${review.score || 'N/A'} - By ${escHtml(review.user?.username || 'Anonymous')}</p>
+              <p>${escHtml((review.review || '').substring(0, 350))}...</p>
+            </div>
+          </li>`;
+      }).join('');
+
+      document.getElementById('btn-prev').disabled = page <= 1;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => loadReviewsPage(1), 100);
+    });
+  </script>
+</body>
+</html>
