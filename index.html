@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrunchyList — Anime Database & Community</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <meta name="description" content="CrunchyList — Your ultimate anime database. Browse seasonal anime, top-ranked shows, reviews, and more.">
+</head>
+<body>
+
+  <!-- Shared header (injected by components.js) -->
+  <div id="site-header"></div>
+
+  <main>
+    <section id="seasonal">
+      <h2>Spring 2026 Anime</h2>
+      <ul id="seasonal-list" class="anime-list">
+        <li>Loading...</li>
+      </ul>
+    </section>
+
+    <section id="top-anime">
+      <h2>Top Anime</h2>
+      <ul id="top-anime-list" class="anime-list">
+        <li>Loading...</li>
+      </ul>
+    </section>
+
+    <section id="reviews">
+      <h2>Recent Reviews</h2>
+      <ul id="reviews-list" class="anime-list">
+        <li>Loading...</li>
+      </ul>
+    </section>
+
+    <!-- Sidebars grouped at the bottom in this simple layout -->
+    <section>
+      <h2>Top Airing Anime</h2>
+      <ul id="top-airing-list" class="anime-list">
+        <li>Loading...</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Top Upcoming</h2>
+      <ul id="top-upcoming-list" class="anime-list">
+         <li>Loading...</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Most Popular</h2>
+      <ul id="most-popular-list" class="anime-list">
+         <li>Loading...</li>
+      </ul>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- Native dialog for modal -->
+  <dialog id="modal"></dialog>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/render.js"></script>
+  <script src="components.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
